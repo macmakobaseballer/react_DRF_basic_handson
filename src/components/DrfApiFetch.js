@@ -29,6 +29,15 @@ const DrfApiFetch = () => {
         setSelectedTask(res.data);
       });
   };
+  const deleteTask = () => {
+    axios
+      .delete(`http://127.0.0.1:8000/api/tasks/${id}`, {
+        headers: {
+          Authorization: "Token 3e8dfb2e7aafdf6d2e69279b32a8e5af08d262f4",
+        },
+      })
+      .then((res) => console.log(res));
+  };
 
   return (
     <div>
@@ -50,6 +59,9 @@ const DrfApiFetch = () => {
       />
       <br />
       <button type="button" onClick={() => getTask()}>
+        Get Task
+      </button>
+      <button type="button" onClick={() => deleteTask()}>
         Get Task
       </button>
       <h3>
