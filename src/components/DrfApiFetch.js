@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { editableInputTypes } from "@testing-library/user-event/dist/utils";
 
 const DrfApiFetch = () => {
   const [tasks, setTasks] = useState([]);
@@ -24,7 +23,6 @@ const DrfApiFetch = () => {
     const data = {
       title: task.title,
     };
-
     axios
       .post(`http://127.0.0.1:8000/api/tasks/`, data, {
         headers: {
@@ -46,6 +44,23 @@ const DrfApiFetch = () => {
         setSelectedTask(res.data);
       });
   };
+
+  const editTask = (task) => {
+    axios
+      .put(`http://127.0.0.1:8000/api/tasks/${task.id}`, task, {
+        headers: {
+          "content-type": "application/json",
+          Authorization: "Token 3e8dfb2e7aafdf6d2e69279b32a8e5af08d262f4",
+        },
+      })
+      .then((res) => {
+        setTasks(
+          tasks.map((task) => (task.id === editedTask.id ? res.data : task))
+        );
+        setEditedTask({ id: "", title: "" });
+      });
+  };
+
   const deleteTask = (id) => {
     axios
       .delete(`http://127.0.0.1:8000/api/tasks/${id}`, {
@@ -75,6 +90,9 @@ const DrfApiFetch = () => {
             <button onClick={() => deleteTask(task.id)}>
               <i className="fas fa-trash-alt"></i>
             </button>
+            <button onClick={() => setEditedTask(task)}>
+              <i className="fas fa-pen"></i>
+            </button>
           </li>
         ))}
       </ul>
@@ -101,7 +119,11 @@ const DrfApiFetch = () => {
         placeholder="New Task?"
         required
       />
-      <button onClick={() => newTask(editedTask)}>Create </button>
+      {editedTask.id ? (
+        <button onClick={() => editTask(editedTask)}>Update</button>
+      ) : (
+        <button onClick={() => newTask(editedTask)}>Create </button>
+      )}
     </div>
   );
 };
